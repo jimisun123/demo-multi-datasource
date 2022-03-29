@@ -9,3 +9,5 @@ PS： Spring Boot 的动态数据源，本质上是把多个数据源存储在�
 AbstractRoutingDataSource 来实现此功能。因此，我们在实现动态数据源的，只需要继承它，实现自己的获取数据源逻辑即可。
 
 PS: 由于持久层需要遵循SpringBoot的规则，以及使用到了AOP切面。 则需要导入 spring-boot-starter-jdbc和spring-boot-starter-aop依赖
+
+PS: 注意AOP切面的规则是如果类上存在注解则覆盖方法，如果不符合业务请修改DynamicDataSourceAspect类
