@@ -1,7 +1,6 @@
-package com.jimisun.dynamicdatasource;
+package com.jimisun.parametricdatasource;
 
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -54,19 +52,8 @@ public class DynamicDataSourceConfig {
         dataSourceMap.put(DataSourceConstants.DS_KEY_MASTER, masterDataSource());
         dataSourceMap.put(DataSourceConstants.DS_KEY_SLAVE, slaveDataSource());
         //设置动态数据源
-        DynamicDataSource dynamicDataSource = new DynamicDataSource();
-        dynamicDataSource.setTargetDataSources(dataSourceMap);
-        dynamicDataSource.setDefaultTargetDataSource(masterDataSource());
+        DynamicDataSource dynamicDataSource = new DynamicDataSource(masterDataSource(),dataSourceMap);
         return dynamicDataSource;
-    }
-
-
-    /**
-     * 系统默认数据源master 事务管理
-     */
-    @Bean(name = "TransactionManager")
-    public DataSourceTransactionManager TransactionManager(@Qualifier("master") DataSource dataSource) {
-        return  new DataSourceTransactionManager(dataSource);
     }
 
 

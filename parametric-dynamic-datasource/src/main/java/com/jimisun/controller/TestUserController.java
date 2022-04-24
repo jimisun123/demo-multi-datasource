@@ -1,6 +1,8 @@
 package com.jimisun.controller;
 
-import com.jimisun.dynamicdatasource.DynamicDataSourceContextHolder;
+import com.jimisun.parametricdatasource.DataSourceUtil;
+import com.jimisun.parametricdatasource.DbInfo;
+import com.jimisun.parametricdatasource.DynamicDataSourceContextHolder;
 import com.jimisun.service.TestUserService;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,6 @@ public class TestUserController {
 
     /**
      * 查询全部
-     * 在控制层使用
      */
     @GetMapping("/listall")
     public Object listAll() {
@@ -45,7 +46,6 @@ public class TestUserController {
 
     /**
      * 查询全部
-     * 在一个方法中使用
      */
     @GetMapping("/list1")
     public Object list1() {
@@ -53,13 +53,50 @@ public class TestUserController {
         SqlSessionTemplate bean = applicationContext.getBean(SqlSessionTemplate.class);
         List<Object> objects = bean.selectList("com.jimisun.mapper.TestUserMapper.selectList", null);
         System.out.println(objects);
+        DynamicDataSourceContextHolder.removeContextKey();
 
         DynamicDataSourceContextHolder.setContextKey("slave");
         SqlSessionTemplate bean1 = applicationContext.getBean(SqlSessionTemplate.class);
         List<Object> bean1List = bean1.selectList("com.jimisun.mapper.TestUserMapper.selectList", null);
         System.out.println(bean1List);
+        DynamicDataSourceContextHolder.removeContextKey();
+
 
         return true;
     }
+
+
+    /**
+     * 根据数据库连接信息获取表信息
+     * http://localhost:8080/user/table?ip=1.15.229.65&port=3307&dbName=test&username=root&password=root
+     */
+    @GetMapping("table")
+    public Object findWithDbInfo(DbInfo dbInfo) throws Exception {
+        //数据源key
+        String newDsKey = System.currentTimeMillis() + "";
+        //添加数据源
+        DataSourceUtil.addDataSourceToDynamic(newDsKey, dbInfo);
+        DynamicDataSourceContextHolder.setContextKey(newDsKey);
+        //查询表信息
+        SqlSessionTemplate bean1 = applicationContext.getBean(SqlSessionTemplate.class);
+        List<Object> bean1List = bean1.selectList("com.jimisun.mapper.TestUserMapper.selectList",
+                null);
+        System.out.println(bean1List);
+        DynamicDataSourceContextHolder.removeContextKey();
+        return "true";
+    }
+
+
+    /**
+     * 测试事务
+     *
+     * @return
+     */
+    @RequestMapping("/testtm")
+    public Object testtm() {
+        testUserService.testTm();
+        return "true";
+    }
+
 
 }

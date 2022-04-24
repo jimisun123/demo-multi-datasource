@@ -9,6 +9,8 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/basic-multi-datasource/pom.xml" />
+        <option value="$PROJECT_DIR$/dynamic-datasource/pom.xml" />
+        <option value="$PROJECT_DIR$/parametric-dynamic-datasource/pom.xml" />
       </list>
     </option>
   </component>
