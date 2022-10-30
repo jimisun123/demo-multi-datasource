@@ -62,10 +62,11 @@ public class DynamicDataSourceConfig {
 
 
     /**
-     * 系统默认数据源master 事务管理
+     * TODO 这里一定要使用动态数据源创建事务管理器 否则事务失效！！！
+     * 事务管理器AOP保存在Thread中的Connection和Mybatis获取的Connection不是同一个，所以会失效！！！
      */
     @Bean(name = "TransactionManager")
-    public DataSourceTransactionManager TransactionManager(@Qualifier("master") DataSource dataSource) {
+    public DataSourceTransactionManager TransactionManager(@Qualifier("dynamicDataSource") DataSource dataSource) {
         return  new DataSourceTransactionManager(dataSource);
     }
 
